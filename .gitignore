@@ -1,4 +1,5 @@
 .buildozer
 .ipynb_checkpoints
 .vscode
+__pycache__
 bin
