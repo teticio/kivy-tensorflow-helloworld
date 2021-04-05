@@ -1,0 +1,4 @@
+.buildozer
+.ipynb_checkpoints
+.vscode
+bin
