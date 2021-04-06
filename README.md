@@ -26,7 +26,7 @@ python3 main.py
 
 ## Android
 
-Currently you can only build for Android using buildozer on Linux. Create a new buildozer.spec file or use the example one from the repo
+Currently you can only build for Android using buildozer on Linux. Create a new buildozer.spec file or use the example one from the repo.
 ```
 buildozer init
 ```
@@ -43,7 +43,7 @@ Note that if your tflite model file is too big to be packaged with your APK, you
 ```
 source.include_exts = py,png,jpg,kv,atlas
 ```
-Change the architecture your are building for to match that of your device or emulator
+Change the architecture you are building for to match that of your device or emulator
 ```
 android.arch = x86
 ```
