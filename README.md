@@ -35,7 +35,11 @@ Make the following changes to the buildozer.spec file
 ```
 source.include_exts = py,png,jpg,kv,atlas,tflite
 
-android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:0.0.0-nightly"
+android.api = 30
+
+android.minapi = 24
+
+android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:+"
 
 requirements = python3,kivy,numpy
 ```
