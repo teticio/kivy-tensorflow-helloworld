@@ -103,8 +103,10 @@ elif platform == 'ios':
             # must cast to ctype._SimpleCData so that pyobjus passes pointer
             floatbuf = cast(bytestr, POINTER(c_float)).contents
             data = NSData.dataWithBytes_length_(floatbuf, len(bytestr))
-            self.interpreter.copyData_toInputTensorAtIndex_error_(
-                data, 0, self.error)
+            print(dir(self.interpreter))
+            self.interpreter.copyData_toInputTensor_error_(
+                data, self.interpreter.inputTensorAtIndex_error_(
+                    0, self.error), self.error)
             self.interpreter.invokeWithError_(self.error)
             output = self.interpreter.outputTensorAtIndex_error_(
                 0, self.error).dataWithError_(self.error).bytes()
