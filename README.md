@@ -8,56 +8,56 @@ You can use the Jupyter notebook in notebooks to create a Tensorflow Lite model 
 
 ## Install buildozer
 
-Follow the instructions for your platform [here](https://pypi.org/project/buildozer/) 
+Install basic Python requirements (all platforms)
 
-At the time of writing I had to install buildozer from the master branch for building on iOS (on a Mac) like so
+```bash
+pip install buildozer cython
+```
 
-```
-pip install git+https://github.com/kivy/buildozer.git@master cython pbxproj cookiecutter
-```
+Follow the instructions for your platform [here](https://pypi.org/project/buildozer/).
 
 ## MacOS, Windows and Linux
 
-```
+```bash
 pip install tensorflow numpy kivy
-
 python3 main.py
 ```
 
 ## Android
 
-Currently you can only build for Android using buildozer on Linux. Create a new buildozer.spec file or use the example one from the repo.
-```
-buildozer init
-```
+Currently you can only build for Android using buildozer on Linux.
 
-Make the following changes to the buildozer.spec file
+Use the included `buildozer.spec` file or make the following changes to one created by `buildozer init`
+
 ```
 source.include_exts = py,png,jpg,kv,atlas,tflite
-
-android.api = 30
-
-android.minapi = 24
-
-android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:+"
-
 requirements = python3,kivy,numpy
+android.api = 30
+android.minapi = 24
+android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:+"
 ```
+
 Note that if your tflite model file is too big to be packaged with your APK, you will have to find some other way of getting it on to the device. If this is the case then change this line to ensure it is not included in the package.
+
 ```
 source.include_exts = py,png,jpg,kv,atlas
 ```
+
 Change the architecture you are building for to match that of your device or emulator
+
 ```
 android.arch = x86
 ```
 
 Build the APK
-```
+
+```bash
 buildozer android debug
 ```
+
 and install it with
-```
+
+```bash
 adb install bin/myapp-0.1-x86-debug.apk
 ```
 
@@ -65,22 +65,27 @@ adb install bin/myapp-0.1-x86-debug.apk
 
 Remember that you will need an Apple developer account to be able to install your app on a real iPhone.
 
-Install Cocoapods if you haven't already
+Install prerequisite system packages
+
+```bash
+brew install cocoapods pkg-config autoconf automake
 ```
-brew install cocoapods
+
+Install additional required Python packages
+
+```bash
+pip install pbxproj cookiecutter
 ```
 
 Build your app and install the Tensorflow Lite pod
-```
+
+```bash
 buildozer ios debug
-
 cd .buildozer/ios/platform/kivy-ios/myapp-ios/
-
 cp YourApp/Podfile .
-
 pod install
-
-open -a Xcode myapp.xcworkspace
 ```
 
-From now on you should open the workspace as opposed to the project. You will almost certainly have to make some changes to the myapp target in Xcode as indicated by `buildozer ios debug` and `pod install`. Every time you build you will need to run `buildozer ios debug` and then build and deploy from Xcode.
+As indicated in the warning messages, you will need to make some changes to the project configuration in Xcode. Navigate to the Build Settings for myapp and filter for `GCC_PREPROCESSOR_DEFINITIONS` and add `COCOAPODS=1` to the Debug target. Then filter for `HEADER_SEARCH_PATHS` and add `$(inherited)`. Lastly filter for `OTHER_LDFLAGS` and add `$(inherited)`. Now you should be able to build and run your app.
+
+Every time you build you will need to run `buildozer ios debug` and then build and deploy from Xcode.
