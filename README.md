@@ -25,7 +25,7 @@ python3 main.py
 
 ## Android
 
-Currently you can only build for Android using buildozer on Linux.
+Currently you can only build for Android using `buildozer` on Linux.
 
 Use the included `buildozer.spec` file or make the following changes to one created by `buildozer init`
 
@@ -37,7 +37,7 @@ android.minapi = 24
 android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:+"
 ```
 
-Note that if your tflite model file is too big to be packaged with your APK, you will have to find some other way of getting it on to the device. If this is the case then change this line to ensure it is not included in the package.
+Note that if your `tflite` model file is too big to be packaged with your APK, you will have to find some other way of getting it on to the device. If this is the case then change this line to ensure it is not included in the package.
 
 ```
 source.include_exts = py,png,jpg,kv,atlas
@@ -71,7 +71,7 @@ Install prerequisite system packages
 brew install cocoapods pkg-config autoconf automake
 ```
 
-Install additional required Python packages
+Install additional Python requirements
 
 ```bash
 pip install pbxproj cookiecutter
@@ -84,8 +84,9 @@ buildozer ios debug
 cd .buildozer/ios/platform/kivy-ios/myapp-ios/
 cp YourApp/Podfile .
 pod install
+open -a Xcode myapp.xcworkspace
 ```
 
-As indicated in the warning messages, you will need to make some changes to the project configuration in Xcode. Navigate to the Build Settings for myapp and filter for `GCC_PREPROCESSOR_DEFINITIONS` and add `COCOAPODS=1` to the Debug target. Then filter for `HEADER_SEARCH_PATHS` and add `$(inherited)`. Lastly filter for `OTHER_LDFLAGS` and add `$(inherited)`. Now you should be able to build and run your app.
+As indicated in the warning messages, you will need to make some changes to the project configuration in Xcode. Navigate to the Build Settings for `myapp` and filter for `GCC_PREPROCESSOR_DEFINITIONS` and add `$(inherited)` to the Debug target. Then repeat the process for `HEADER_SEARCH_PATHS`, `OTHER_LDFLAGS` and `EXCLUDED_ARCHS` for all targets. Now you should be able to build and run your app.
 
 Every time you build you will need to run `buildozer ios debug` and then build and deploy from Xcode.
