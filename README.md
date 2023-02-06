@@ -87,6 +87,10 @@ pod install
 open -a Xcode myapp.xcworkspace
 ```
 
-As indicated in the warning messages, you will need to make some changes to the project configuration. You can either do this by editing `myapp-ios\myapp.xcodeproj` or by editing the Build Settings for `myapp` in Xcode. Search for `GCC_PREPROCESSOR_DEFINITIONS` and add `$(inherited)` to the Debug target. Then repeat the process for `HEADER_SEARCH_PATHS`, `OTHER_LDFLAGS` and (possibly) `EXCLUDED_ARCHS[sdk=iphonesimulator*]` for all targets. Now you should be able to build and run your app.
+As indicated in the warning messages, you will need to make some changes to the project configuration. You can either do this by editing `myapp-ios\myapp.xcodeproj` or by editing the Build Settings for `myapp` in Xcode. Search for `GCC_PREPROCESSOR_DEFINITIONS` and add `$(inherited)` to the Debug target. Then repeat the process for `HEADER_SEARCH_PATHS`, `OTHER_LDFLAGS` and (possibly) `EXCLUDED_ARCHS[sdk=iphonesimulator*]` for all targets. Now you should be able to build and run your app. All being well you should see the following output (give or take rounding errors)
+
+```python
+[[ 0.01647118,  1.0278152 , -0.7065112 , -1.0278157 ,  0.12216613, 0.37980393,  0.5839217 , -0.04283606, -0.04240461, -0.58534086 ]]
+```
 
 Every time you build you will need to run `buildozer ios debug` and then build and deploy from Xcode.
