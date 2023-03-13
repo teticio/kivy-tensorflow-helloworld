@@ -187,7 +187,7 @@ android.minapi = 24
 #android.add_assets =
 
 # (list) Gradle dependencies to add
-android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:+"
+android.gradle_dependencies = org.tensorflow:tensorflow-lite:+,org.tensorflow:tensorflow-lite-support:+
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
