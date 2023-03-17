@@ -34,7 +34,7 @@ source.include_exts = py,png,jpg,kv,atlas,tflite
 requirements = python3,kivy,numpy
 android.api = 30
 android.minapi = 24
-android.gradle_dependencies = "org.tensorflow:tensorflow-lite:+","org.tensorflow:tensorflow-lite-support:+"
+android.gradle_dependencies = org.tensorflow:tensorflow-lite:+,org.tensorflow:tensorflow-lite-support:+
 ```
 
 Note that if your `tflite` model file is too big to be packaged with your APK, you will have to find some other way of getting it on to the device. If this is the case then change this line to ensure it is not included in the package.
