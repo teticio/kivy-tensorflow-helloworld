@@ -13,6 +13,9 @@ if platform == 'android':
         'org.tensorflow.lite.support.tensorbuffer.TensorBuffer')
     ByteBuffer = autoclass('java.nio.ByteBuffer')
 
+    # dummy import so buildozer isn't cutting it away since it's used by options.setNumThreads
+    InterpreterApiOptions = autoclass('org.tensorflow.lite.InterpreterApi$Options')
+
     class TensorFlowModel():
         def load(self, model_filename, num_threads=None):
             model = File(model_filename)
