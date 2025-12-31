@@ -2,7 +2,7 @@ import numpy as np
 from kivy.utils import platform
 
 if platform == 'android':
-    from jnius import autoclass
+    from jnius import autoclass # type: ignore
 
     File = autoclass('java.io.File')
     Interpreter = autoclass('org.tensorflow.lite.Interpreter')
@@ -49,7 +49,7 @@ if platform == 'android':
                               self.output_shape)
 
 elif platform == 'ios':
-    from pyobjus import autoclass, objc_arr
+    from pyobjus import autoclass, objc_arr # type: ignore
     from ctypes import c_float, cast, POINTER
 
     NSString = autoclass('NSString')
@@ -122,11 +122,17 @@ elif platform == 'ios':
                         output.arg_ref), c_float), self.output_shape)
 
 else:
-    import tensorflow as tf
+    if platform == 'win':
+        import tensorflow as tf
+        Interpreter = tf.lite.Interpreter
+
+    else:
+        # ai-edege-litert is only available on Linux/WSL and MacOS 
+        from ai_edge_litert.interpreter import Interpreter # type: ignore
 
     class TensorFlowModel:
         def load(self, model_filename, num_threads=None):
-            self.interpreter = tf.lite.Interpreter(model_filename,
+            self.interpreter = Interpreter(model_filename,
                                                    num_threads=num_threads)
             self.interpreter.allocate_tensors()
 

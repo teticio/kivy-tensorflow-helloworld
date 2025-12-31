@@ -4,4 +4,4 @@
 __pycache__
 bin
 Pipfile
-
+.venv
