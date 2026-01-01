@@ -99,7 +99,7 @@ fullscreen = 0
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 30
+android.api = 35
 
 # (int) Minimum API your APK / AAB will support.
 android.minapi = 24
@@ -187,7 +187,8 @@ android.minapi = 24
 #android.add_assets =
 
 # (list) Gradle dependencies to add
-android.gradle_dependencies = org.tensorflow:tensorflow-lite:+,org.tensorflow:tensorflow-lite-support:+
+# The last two are only needed if you want to use gpu acceleration
+android.gradle_dependencies = com.google.ai.edge.litert:litert:1.4.1, com.google.ai.edge.litert:litert-support:1.4.1, com.google.ai.edge.litert:litert-gpu:1.4.1, com.google.ai.edge.litert:litert-gpu-api:1.4.1
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
