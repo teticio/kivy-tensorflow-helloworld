@@ -32,10 +32,12 @@ Use the included `buildozer.spec` file or make the following changes to one crea
 ```
 source.include_exts = py,png,jpg,kv,atlas,tflite
 requirements = python3,kivy,numpy
-android.api = 30
+android.api = 35
 android.minapi = 24
-android.gradle_dependencies = org.tensorflow:tensorflow-lite:+,org.tensorflow:tensorflow-lite-support:+
+android.gradle_dependencies = com.google.ai.edge.litert:litert:1.4.1, com.google.ai.edge.litert:litert-support:1.4.1, com.google.ai.edge.litert:litert-gpu:1.4.1, com.google.ai.edge.litert:litert-gpu-api:1.4.1
 ```
+
+You only need ```com.google.ai.edge.litert:litert-gpu:1.4.1, com.google.ai.edge.litert:litert-gpu-api:1.4.1``` if you want to use gpu acceleration.
 
 Note that if your `tflite` model file is too big to be packaged with your APK, you will have to find some other way of getting it on to the device. If this is the case then change this line to ensure it is not included in the package.
 
@@ -60,6 +62,10 @@ and install it with
 ```bash
 adb install bin/myapp-0.1-x86-debug.apk
 ```
+
+### java.lang.ClassNotFoundException
+
+This is a known problem of pyjnius if you try to access java classes from a non-main thread. If you encounter this problem, you should try to create the TensorFlowModel class from the main thread and than run  ```load()``` and ```pred()``` from a seperate thread. If this doesn't work please use try using the main thread for everything.
 
 ## iOS
 
