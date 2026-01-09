@@ -9,20 +9,55 @@ if platform == 'android':
     InterpreterOptions = autoclass('org.tensorflow.lite.Interpreter$Options')
     Tensor = autoclass('org.tensorflow.lite.Tensor')
     DataType = autoclass('org.tensorflow.lite.DataType')
-    TensorBuffer = autoclass(
-        'org.tensorflow.lite.support.tensorbuffer.TensorBuffer')
+    TensorBuffer = autoclass('org.tensorflow.lite.support.tensorbuffer.TensorBuffer')
     ByteBuffer = autoclass('java.nio.ByteBuffer')
+    GpuDelegate = autoclass('org.tensorflow.lite.gpu.GpuDelegate')
+    GpuDelegateOptions = autoclass('org.tensorflow.lite.gpu.GpuDelegate$Options')
+    CompatibilityList = autoclass('org.tensorflow.lite.gpu.CompatibilityList')
 
     # dummy import so buildozer isn't cutting it away since it's used by options.setNumThreads
     InterpreterApiOptions = autoclass('org.tensorflow.lite.InterpreterApi$Options')
+    Delegate = autoclass('org.tensorflow.lite.Delegate')
 
     class TensorFlowModel():
-        def load(self, model_filename, num_threads=None):
-            model = File(model_filename)
-            options = InterpreterOptions()
-            if num_threads is not None:
-                options.setNumThreads(num_threads)
-            self.interpreter = Interpreter(model, options)
+        """
+        Crossplatform inference for .tflite models
+        
+        :param model_filename: Path to the model
+        :type model_filename: str
+        :param num_threads: Number of threads to use
+        :type num_threads: int
+        :param use_gpu: Use GPU acceleration if available
+        :type use_gpu: bool
+        :param precision_loss: GPU only: Uses FP16 internally providing significant speed ups, might come with major quality degradation
+        :type precision_loss: bool
+        :param sustained_speed: GPU only: Load the model to achieve maximum speed (takes really long; only for small models worth it)
+        :type sustained_speed: bool
+        """
+        def __init__(self, model_filename: str, num_threads: int = 1, use_gpu: bool = True, precision_loss: bool = True, sustained_speed: bool = False):
+            self.model_filename = model_filename
+            self.options = InterpreterOptions()
+            self.compatList = CompatibilityList()
+            if use_gpu and self.compatList.isDelegateSupportedOnThisDevice():
+                delegate_options = self.compatList.getBestOptionsForThisDevice()
+                delegate_options = (
+                    delegate_options
+                    .setPrecisionLossAllowed(precision_loss)
+                    .setInferencePreference(1 if sustained_speed else 0)
+                )
+                gpu_delegate = GpuDelegate(delegate_options)
+                self.options.addDelegate(gpu_delegate)
+                print("set gpu")
+            else:
+                self.options.setNumThreads(num_threads)
+                self.options.setUseXNNPACK(True)
+
+        def load(self):
+            """
+            Loads the model from the path given in the constructor. This takes some time (for a CNN with 15M parameters around 2s)
+            """
+            model = File(self.model_filename)
+            self.interpreter = Interpreter(model, self.options)
             self.allocate_tensors()
 
         def allocate_tensors(self):
@@ -40,13 +75,16 @@ if platform == 'android':
                 self.allocate_tensors()
 
         def pred(self, x):
+            """
+            Run inference.
+            
+            :param x: Input numpy array
+            """
             # assumes one input and one output for now
             input = ByteBuffer.wrap(x.tobytes())
-            output = TensorBuffer.createFixedSize(self.output_shape,
-                                                  self.output_type)
+            output = TensorBuffer.createFixedSize(self.output_shape, self.output_type)
             self.interpreter.run(input, output.getBuffer().rewind())
-            return np.reshape(np.array(output.getFloatArray()),
-                              self.output_shape)
+            return np.reshape(np.array(output.getFloatArray()), self.output_shape)
 
 elif platform == 'ios':
     from pyobjus import autoclass, objc_arr # type: ignore
@@ -57,7 +95,7 @@ elif platform == 'ios':
     Interpreter = autoclass('TFLInterpreter')
     InterpreterOptions = autoclass('TFLInterpreterOptions')
     NSData = autoclass('NSData')
-    NSMutableArray = autoclass("NSMutableArray")
+    NSMutableArray = autoclass('NSMutableArray')
 
     class TensorFlowModel:
         def load(self, model_filename, num_threads=None):

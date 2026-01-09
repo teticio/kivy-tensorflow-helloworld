@@ -9,8 +9,8 @@ from model import TensorFlowModel
 class MyApp(App):
 
     def build(self):
-        model = TensorFlowModel()
-        model.load(os.path.join(os.getcwd(), 'model.tflite'))
+        model = TensorFlowModel(os.path.join(os.getcwd(), 'model.tflite'))
+        model.load()
         np.random.seed(42)
         x = np.array(np.random.random_sample((1, 28, 28)), np.float32)
         y = model.pred(x)
